@@ -10,6 +10,7 @@
 #define __EXP_H__
 
 #include <iostream>
+#include <vector>
 #include <string>
 
 using namespace std;
@@ -45,5 +46,8 @@ struct response {
         int num;
 };
 
+//static vector<response> vec_q;
+
+static struct response q_list[5];
 
 #endif /* __EXP_H__ */
