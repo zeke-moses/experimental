@@ -65,9 +65,11 @@ void move_to_queue()
 
 int main(int argc, char **argv)
 {
+        /*
 	check();
     move_to_queue();
     cout<<"front of queue is \n";
     cout<<q_list[0].num<<"\n";
+    */
 	return 0;
 }

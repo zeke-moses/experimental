@@ -10,7 +10,7 @@ LDFLAGS = -g
 LDLIBS  = -lm
 INCLUDES= 
 
-$(TARGET):
+$(TARGET): exp-structs.h
 
 
 clean:
