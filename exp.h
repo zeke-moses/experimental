@@ -59,6 +59,8 @@ void find_nearest_starting_stops(string curr_lat, string curr_lon);
 
 static pthread_t thread_list[LIST_SIZE];
 
+static pthread_mutex_t mut;
+
 /*
  * these functions are for splitting the process into separate threads
  * so that the process of filling each struct will be sped up.

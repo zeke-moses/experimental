@@ -108,6 +108,7 @@ void thread_func0()
                         curr_lon = element;
         }
 
+        pthread_mutex_lock(&mut);
         ifstream in_file("../data/google_transit/stops.txt");
         if(!in_file)
                 die("stops.txt could not be opened");
@@ -150,6 +151,7 @@ void thread_func0()
                 global_list[0].outer_list[i].bus_stop = nearest_stops[i].line;
         }
 
+        pthread_mutex_unlock(&mut);
         // now going to fill middle list.
 }
 
@@ -171,6 +173,7 @@ void thread_func1()
                         curr_lon = element;
         }
 
+        pthread_mutex_lock(&mut);
         ifstream in_file("../data/google_transit/stops.txt");
         if(!in_file)
                 die("stops.txt could not be opened");
@@ -213,6 +216,7 @@ void thread_func1()
                 global_list[1].outer_list[i].bus_stop = nearest_stops[i].line;
         }
 
+        pthread_mutex_unlock(&mut);
         // now going to fill middle list.
 }
 
@@ -235,6 +239,7 @@ void thread_func2()
                         curr_lon = element;
         }
 
+        pthread_mutex_lock(&mut);
         ifstream in_file("../data/google_transit/stops.txt");
         if(!in_file)
                 die("stops.txt could not be opened");
@@ -277,6 +282,7 @@ void thread_func2()
                 global_list[2].outer_list[i].bus_stop = nearest_stops[i].line;
         }
 
+        pthread_mutex_unlock(&mut);
         // now going to fill middle list.
 }
 
@@ -299,6 +305,7 @@ void thread_func3()
                         curr_lon = element;
         }
 
+        pthread_mutex_lock(&mut);
         ifstream in_file("../data/google_transit/stops.txt");
         if(!in_file)
                 die("stops.txt could not be opened");
@@ -341,6 +348,7 @@ void thread_func3()
                 global_list[3].outer_list[i].bus_stop = nearest_stops[i].line;
         }
 
+        pthread_mutex_unlock(&mut);
         // now going to fill middle list.
 }
 
@@ -362,6 +370,7 @@ void thread_func4()
                         curr_lon = element;
         }
 
+        pthread_mutex_lock(&mut);
         ifstream in_file("../data/google_transit/stops.txt");
         if(!in_file)
                 die("stops.txt could not be opened");
@@ -404,12 +413,14 @@ void thread_func4()
                 global_list[4].outer_list[i].bus_stop = nearest_stops[i].line;
         }
 
+        pthread_mutex_unlock(&mut);
         // now going to fill middle list.
 }
 
 static void *thread_main(void *j)
 {
         int i = *(int *)j;
+        pthread_mutex_init(&mut, NULL);
         switch (i) {
                 case 0:
                         thread_func0();
@@ -461,6 +472,7 @@ int main(int argc, char **argv)
         for (i = 0; i < LIST_SIZE; i++) {
                 pthread_join(thread_list[i], NULL);
         }
+        pthread_mutex_destroy(&mut);
 
         return 0;
 }
