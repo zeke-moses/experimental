@@ -23,6 +23,7 @@
 #include <signal.h>         // signal
 #include <sys/stat.h>       // stat
 #include <math.h>
+#include <pthread.h>        // for multi-threading
 // cpp libraries
 #include <fstream>          // for parsing text files
 #include <sstream>          // for tokenizing string by commas
@@ -55,5 +56,18 @@ struct dist_and_string nearest_stops[LIST_SIZE];
 
 static int create_google_maps_connection();
 void find_nearest_starting_stops(string curr_lat, string curr_lon);
+
+static pthread_t thread_list[LIST_SIZE];
+
+/*
+ * these functions are for splitting the process into separate threads
+ * so that the process of filling each struct will be sped up.
+ */
+void thread_func0();
+void thread_func1();
+void thread_func2();
+void thread_func3();
+void thread_func4();
+static void *thread_main(int i);
 
 #endif /* __EXP_H__ */

@@ -7,7 +7,7 @@ CXX		= g++
 CFLAGS  = -g -Wall
 CXXFLAGS= -g -Wall
 LDFLAGS = -g
-LDLIBS  = -lm
+LDLIBS  = -lm -lpthread
 INCLUDES= 
 
 $(TARGET): exp-structs.h
