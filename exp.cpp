@@ -8,68 +8,101 @@
 
 #include "exp.h"
 
-/*
- * simply checks to see if the heirarchy of lists is working as intended
- */
-static void check()
+static void die(const char *msg)
 {
-	int i, j, k;
-	for (i = 0; i < 5; i++) {
-		outer_list[i].num = i;
-		for (j = 0; j < 5; j++) {
-			outer_list[i].middle_list[j].num = i * j;
-
-			for (k = 0; k < 5; k++) {
-				outer_list[i].middle_list[j].inner_list[k].num = i*j*k;
-			}
-		}
-	}
-    cout<<"\n";
-
-	for (i = 0; i < 5; i++) {
-		printf("%d ", outer_list[i].num);
-
-		for (j = 0; j < 5; j++) {
-			printf("%d ", outer_list[i].middle_list[j].num);
-
-			for (k = 0; k < 5; k++) {
-                cout<<outer_list[i].middle_list[j].inner_list[k].num<<" ";
-			}
-		}
-	}
-    cout<<"\n";
+        perror(msg);
+        exit(1);
 }
 
 void move_to_queue()
 {
-        struct response largest;
-        int i, j, k;
-        for (i = 0; i < 5; i++) {
-                if (outer_list[i].num > largest.num) {
-                        largest.num = outer_list[i].num;
+}
+
+static int create_google_maps_connection()
+{
+        return 0;
+}
+
+/*
+ * normally, need to square the result. But honestly, it shouldn't matter
+ * since we're using it to compare here.
+ */
+long double find_euclid_dist(string curr_lat, string curr_lon,
+                                            string other_lat, string other_lon)
+{
+        long double term1 = (long double) SQR(stod(curr_lat)-stod(other_lat));
+        long double term2 = (long double) SQR(stod(curr_lon)-stod(other_lon));
+        return sqrt(term1 + term2);
+}
+
+void find_nearest_starting_stops(string curr_lat, string curr_lon)
+{
+        /*
+         * going to cheat a little, parse through stops.txt and
+         * caclulate five nearest spots by measuring euclidean distance.
+         */
+        string line, element;
+        string other_lat, other_lon;
+        int i;
+        long double dist;
+        ifstream in_file("../data/google_transit/stops.txt");
+        if (!in_file)
+                die("stops.txt could not be opened");
+
+        for (i = 0; i < LIST_SIZE; i++) {
+                nearest_stops[i].distance = 0;
+        }
+
+        // get past first line
+        getline(in_file, line);
+        while (getline(in_file, line)) {
+
+                istringstream iss(line);
+                for (i = 0; getline(iss, element, ','); i++) {
+                        if (i == 4)
+                                other_lat = element;
+                        if (i == 5)
+                                other_lon = element;
                 }
-                for (j = 0; j < 5; j++) {
-                        if (outer_list[i].middle_list[j].num > largest.num) {
-                                largest.num = outer_list[i].middle_list[j].num;
-                        }
-                        for (k = 0; k < 5; k++) {
-                                if (outer_list[i].middle_list[j].inner_list[k].num > largest.num) {
-                                        largest.num = outer_list[i].middle_list[j].inner_list[k].num;
-                                }
+
+                if (other_lat.empty() || other_lon.empty())
+                        continue;
+
+                dist = find_euclid_dist(curr_lat, curr_lon, other_lat, other_lon);
+
+                for (i = 0; i < LIST_SIZE; i++) {
+                        if (nearest_stops[i].distance > dist ||
+                                        nearest_stops[i].distance == 0) {
+                                cout<<"adding new entry\n";
+                                cout<<"dist "<<dist<<"\nline "<<line<<"\n";
+                                nearest_stops[i].distance = dist;
+                                nearest_stops[i].line = line;
+                                break;
                         }
                 }
         }
+        in_file.close();
 
-        q_list[0].num = outer_list[--i].middle_list[--j].inner_list[--k].num;
+        // move the five nearest bus stops to the global_list
+        for (i = 0; i < LIST_SIZE; i++) {
+                global_list[i].bus_stop = nearest_stops[i].line;
+        }
 }
 
 int main(int argc, char **argv)
 {
-        /*
-	check();
-    move_to_queue();
-    cout<<"front of queue is \n";
-    cout<<q_list[0].num<<"\n";
-    */
-	return 0;
+        if (argc != 3)
+                cout<<"run ./test.sh\n";
+
+        // get current position.
+        string curr_lat(argv[1]);
+        string curr_lon(argv[2]);
+
+        if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+                die("signal failed");
+
+        // start filling out list structure
+        find_nearest_starting_stops(curr_lat, curr_lon);
+
+        return 0;
 }

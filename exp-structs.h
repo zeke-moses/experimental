@@ -12,13 +12,13 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#define     LIST_SIZE       5
+#define             LIST_SIZE                5
 
 using namespace std;
 
 struct inner_node {
         string bus_stop;
-        int rest_points; // restaurant_points
+        int rest_points;            // restaurant_points
         int dist_from_prev_stop;
         int time_from_prev_stop;
 };
@@ -26,17 +26,17 @@ struct inner_node {
 struct middle_node {
         string bus_stop;
         int rest_points;
-        int dist_from_prev_stop; // think of as connecting edge
-        int time_from_prev_stop; // from outer_node
+        int dist_from_prev_stop;    // think of as connecting edge
+        int time_from_prev_stop;    // from outer_node
         struct inner_node inner_list[LIST_SIZE];
 };
 
 struct outer_node {
         string bus_stop;
         int rest_points; // idea: calculate rest_points, but don't hold list.
-        // recalculate when returning list of restaurants to user.
-        int dist_from_prev_stop; // in feet?
-        int time_from_prev_stop; // in minutes?
+                    // recalculate when returning list of restaurants to user.
+        int dist_from_prev_stop;    // in feet?
+        int time_from_prev_stop;    // in minutes?
         struct middle_node middle_list[LIST_SIZE];
 };
 
@@ -60,10 +60,10 @@ struct global_node {
 static struct global_node global_list[LIST_SIZE];
 
 struct response {
-        string starting_stop; // c++ struct implementation
-        string middle1_stop;   // means only three stops can be evaluated
+        string starting_stop;       // c++ struct implementation
+        string middle1_stop;        // means only four stops can be evaluated
         string middle2_stop;
-        string ending_stop;   // but in the future this can be changed
+        string ending_stop;         // but in the future this can be changed
 };
 
 /*
